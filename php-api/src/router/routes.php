@@ -7,6 +7,6 @@ return [
 
     ],
     'DELETE' => [
-        '/posts/[0-9]+' => 'PostController@delete'
-    ]
+        '/posts/[0-9]+' => 'PostController@delete',
+    ],
 ];

@@ -1,12 +1,15 @@
 <?php
 namespace App\router;
+
+use \Exception;
+
 class Router
 {
     private $uri;
     private $requestMethod;
     private $routes;
 
-    function __construct($routes = [])
+    public function __construct($routes = [])
     {
         $this->uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $this->requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -18,7 +21,7 @@ class Router
         return array_key_exists($uri, $routes) ? [$uri => $routes[$uri]] : [];
     }
 
-    function getDynamicsRoutes($uri, $routes)
+    public function getDynamicsRoutes($uri, $routes)
     {
         return array_filter($routes, function ($value) use ($uri) {
             $regex = str_replace('/', '\/', ltrim($value, '/'));
@@ -51,23 +54,19 @@ class Router
     public function init()
     {
         $matchedUri = $this->getExactRoutes($this->uri, $this->routes);
-
         $params = [];
 
         if (empty($matchedUri)) {
             $matchedUri = $this->getDynamicsRoutes($this->uri, $this->routes);
-
             $uriExploded = explode('/', ltrim($this->uri, '/'));
-
             $params = $this->getParams($uriExploded, $this->matchedUri);
-
-            $params = $this->formatParams($uriExploded, $this->params);
+            $params = $this->formatParams($uriExploded, $params);
         }
 
         if (!empty($matchedUri)) {
             return controller($matchedUri, $params);
         }
 
-        throw new \Exception('Does not exist this route');
+        throw new Exception('Does not exist this route');
     }
 }

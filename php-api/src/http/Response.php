@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\http;
 
 class Response
@@ -17,7 +16,7 @@ class Response
     {
         self::sendHeaders($httpCode);
         return json_encode([
-            'data' => $content
+            'data' => $content,
         ], JSON_FORCE_OBJECT);
     }
 }

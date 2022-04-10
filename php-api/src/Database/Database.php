@@ -9,9 +9,10 @@ use \PDOStatement;
 class Database
 {
     const HOST = 'db';
-    const NAME = 'php_api';
-    const USER = 'php_vagas_admin';
-    const PASS = 'php_vagas_admin_password';
+    const NAME = getenv('MYSQL_DATABASE');
+    const USER = getenv('MYSQL_USER');
+    const PASS = getenv('MYSQL_PASSWORD');
+
     private $table;
     private $connection;
     private static $instance;
