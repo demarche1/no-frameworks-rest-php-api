@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+    db:
+        container_name: db
+        image: mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: php_api
+            MYSQL_USER: php_vagas_admin
+            MYSQL_PASSWORD: php_vagas_admin_password
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - '9906:3306'
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - '8080:80'
+        restart: always
+        environment:
+            PMA_HOST: db
+        depends_on:
+            - db
+
