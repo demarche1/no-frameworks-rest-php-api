@@ -2,19 +2,29 @@
 
 namespace App\controllers;
 
-class PostController
+use \App\database\Database;
+
+class UserController
 {
     public function index($params)
     {
-        echo '<pre>';
-        print_r(json_decode(file_get_contents('php://input'), true));
-        echo '</pre>';
-        exit;
         return [
             'title' => 'Index Test route',
             'date' => date('D/m/y'),
             'params' => $params,
         ];
+    }
+
+    public function create()
+    {
+        $db = Database::getInstance();
+        $db->setTable('users');
+
+        return $db->insert([
+            'name' => 'Alessandro',
+            'email' => 'ale@email.com',
+            'password' => password_hash('123', PASSWORD_ARGON2I),
+        ]);
     }
 
     public function show($params)

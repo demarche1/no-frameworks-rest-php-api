@@ -1,6 +1,6 @@
 <?php
 
-namespace Root\Html\Db;
+namespace App\database;
 
 use \PDO;
 use \PDOException;
@@ -8,12 +8,7 @@ use \PDOStatement;
 
 class Database
 {
-    const HOST = 'db';
-    const NAME = getenv('MYSQL_DATABASE');
-    const USER = getenv('MYSQL_USER');
-    const PASS = getenv('MYSQL_PASSWORD');
-
-    private $table;
+    const HOST = '0.0.0.0:9906';
     private $connection;
     private static $instance;
 
@@ -27,7 +22,8 @@ class Database
         $this->setConnection();
     }
 
-    public function setTable(string $table = null) {
+    public function setTable(string $table = null)
+    {
         $this->table = $table;
     }
 
@@ -55,7 +51,7 @@ class Database
     private function setConnection()
     {
         try {
-            $this->connection = new PDO('mysql:host=' . self::HOST . ';dbname=' . self::NAME, self::USER, self::PASS);
+            $this->connection = new PDO(getenv('DIALECT') . ':host=' . self::HOST . ';dbname=' . getenv('MYSQL_DATABASE'), getenv('MYSQL_USER'), getenv('MYSQL_PASSWORD'));
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die('ERROR: ' . $e);
@@ -83,12 +79,12 @@ class Database
      * @return bool|string
      * @example values param must be assoc array [$key => $value]
      */
-    public function insert(array $values): bool|string
+    public function insert(array $values)
     {
         $fields = array_keys($values);
         $params = array_values($values);
-        $binds  = array_fill(0, count($values), '?');
-        $query  = "INSERT INTO $this->table (" . implode(',', $fields) . ") VALUES (" . implode(',', $binds)  . ")";
+        $binds = array_fill(0, count($values), '?');
+        $query = "INSERT INTO $this->table (" . implode(',', $fields) . ") VALUES (" . implode(',', $binds) . ")";
 
         $this->execute($query, $params);
 
@@ -106,9 +102,9 @@ class Database
      */
     public function select(string $where = null, string $order = null, string $limit = null, string $fields = '*'): PDOStatement
     {
-        $where = strlen($where) ? "WHERE $where"    : '';
+        $where = strlen($where) ? "WHERE $where" : '';
         $order = strlen($order) ? "ORDER BY $order" : '';
-        $limit = strlen($limit) ? "LIMIT $limit"    : '';
+        $limit = strlen($limit) ? "LIMIT $limit" : '';
 
         $query = "SELECT $fields FROM $this->table $where $order $limit";
 
