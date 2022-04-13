@@ -15,7 +15,7 @@ class Server
 
             $router = new Router($routes);
 
-            Response::send(201, $router->init());
+            Response::send(200, $router->init());
 
         } catch (Exception $e) {
             echo 'ERROR: ' . $e->getMessage();

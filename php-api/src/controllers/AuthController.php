@@ -6,6 +6,7 @@ use Firebase\JWT\Key;
 use \App\database\Database;
 use \App\http\Request;
 use \App\http\Response;
+use \App\models\UserModel;
 use \DateTimeImmutable;
 use \Firebase\JWT\JWT;
 
@@ -25,7 +26,7 @@ class AuthController
         $db = Database::getInstance();
         $db->setTable('users');
 
-        $user = $db->select("email = '$email'")->fetchObject('stdClass');
+        $user = $db->select("email = '$email'")->fetchObject(UserModel::class);
 
         if (!password_verify($password, $user->password)) {
             Response::send(400, [
@@ -36,7 +37,7 @@ class AuthController
 
         $secretKey = getenv('SECRET_KEY');
         $issuedAt = new DateTimeImmutable();
-        $expire = $issuedAt->modify('+6 minutes')->getTimestamp();
+        $expire = $issuedAt->modify('+30 minutes')->getTimestamp();
         $serverName = getenv('SERVER_NAME');
         $userEmail = $user->email;
 
@@ -89,7 +90,7 @@ class AuthController
 
         $db = Database::getInstance();
         $db->setTable('users');
-        $user = $db->select("email = '$token->userEmail'")->fetchObject('stdClass');
+        $user = $db->select("email = '$token->userEmail'")->fetchObject(UserModel::class);
 
         if (empty($user)) {
             Response::send(500, [

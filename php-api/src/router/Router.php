@@ -31,6 +31,7 @@ class Router
 
     private function getParams($uri, $matchedUri)
     {
+
         if (empty($matchedUri)) {
             return [];
         }
@@ -59,7 +60,7 @@ class Router
         if (empty($matchedUri)) {
             $matchedUri = $this->getDynamicsRoutes($this->uri, $this->routes);
             $uriExploded = explode('/', ltrim($this->uri, '/'));
-            $params = $this->getParams($uriExploded, $this->matchedUri);
+            $params = $this->getParams($uriExploded, $matchedUri);
             $params = $this->formatParams($uriExploded, $params);
         }
 
