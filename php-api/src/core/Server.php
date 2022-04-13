@@ -4,6 +4,7 @@ namespace App\core;
 
 use \App\http\Response;
 use \App\router\Router;
+use \Exception;
 
 class Server
 {
@@ -14,13 +15,10 @@ class Server
 
             $router = new Router($routes);
 
-            echo Response::send(201, $router->init());
+            Response::send(201, $router->init());
 
-        } catch (\Exception $e) {
-            echo Response::send(500, [
-                'error' => $e->getMessage(),
-            ]);
-
+        } catch (Exception $e) {
+            echo 'ERROR: ' . $e->getMessage();
             exit;
         }
     }

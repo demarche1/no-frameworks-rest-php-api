@@ -2,12 +2,12 @@
 
 return [
     'GET' => [
-        '/' => 'PostController@index',
+        '/' => 'PostController@index@auth',
         '/posts/[0-9]+' => 'PostController@show@auth',
     ],
     'DELETE' => [
         '/posts/[0-9]+' => 'PostController@delete',
-        '/user/logout' => 'AuthController@logout',
+        '/user/logout' => 'AuthController@logout@auth',
     ],
     'POST' => [
         '/user/register' => 'UserController@create',

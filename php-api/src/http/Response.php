@@ -15,8 +15,6 @@ class Response
     public static function send($httpCode, $content)
     {
         self::sendHeaders($httpCode);
-        return json_encode([
-            'data' => $content,
-        ], JSON_FORCE_OBJECT);
+        echo json_encode($content, JSON_FORCE_OBJECT);
     }
 }

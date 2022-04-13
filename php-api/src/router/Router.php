@@ -1,7 +1,7 @@
 <?php
 namespace App\router;
 
-use \Exception;
+use \App\http\Response;
 
 class Router
 {
@@ -67,6 +67,9 @@ class Router
             return controller($matchedUri, $params);
         }
 
-        throw new Exception('Does not exist this route');
+        Response::send(400, [
+            'status' => 'Bad Request',
+        ]);
+        exit;
     }
 }
