@@ -39,4 +39,28 @@ class UserModel
         return $this->queryBuilder->select("id = '$id'")->fetchObject(self::class);
     }
 
+    public function update($id)
+    {
+        try {
+            $hashInfo = password_get_info($this->password);
+
+            return $this->queryBuilder->update("id = '$id'", [
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => $hashInfo['algoName'] === 'unknown' ? password_hash($this->password, PASSWORD_ARGON2I) : $this->password,
+            ]);
+
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
+    public function delete()
+    {
+        try {
+            return $this->queryBuilder->delete("id = '$this->id'");
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
 }

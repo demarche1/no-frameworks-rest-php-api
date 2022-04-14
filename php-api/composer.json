@@ -4,7 +4,8 @@
         "files": [
             "src/router/router.php",
             "src/core/controller.php",
-            "src/helpers/contants.php"
+            "src/helpers/contants.php",
+            "src/helpers/validator.php"
         ],
         "psr-4": {
             "App\\": "src/"

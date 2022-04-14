@@ -68,8 +68,8 @@ class Router
             return controller($matchedUri, $params);
         }
 
-        Response::send(400, [
-            'status' => 'Bad Request',
+        Response::send(404, [
+            'status' => 'Not Found',
         ]);
         exit;
     }

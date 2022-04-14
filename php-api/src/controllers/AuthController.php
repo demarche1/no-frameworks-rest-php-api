@@ -2,13 +2,14 @@
 
 namespace App\controllers;
 
-use Firebase\JWT\Key;
 use \App\database\Database;
 use \App\http\Request;
 use \App\http\Response;
+use \App\models\UserKeys;
 use \App\models\UserModel;
 use \DateTimeImmutable;
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 class AuthController
 {
@@ -49,7 +50,15 @@ class AuthController
             'userEmail' => $userEmail, // User name
         ];
 
-        return JWT::encode($data, $secretKey, 'HS256');
+        $key = JWT::encode($data, $secretKey, 'HS256');
+
+        $userKeys = new UserKeys();
+        $userKeys->store($key, $user->id);
+
+        Response::send(200, [
+            'key' => $key,
+        ]);
+        exit;
     }
 
     public static function auth()
@@ -99,10 +108,18 @@ class AuthController
             exit;
         }
 
-        $_COOKIE['auth_user'] = [
-            'name' => $user->name,
-            'email' => $user->email,
-        ];
+        $userKeys = new UserKeys();
+        $key = $userKeys->findById($user->id);
+
+        if (empty($key)) {
+            Response::send(401, [
+                'status' => 'Unauthorized',
+            ]);
+            exit;
+        }
+
+        $_COOKIE['user_key'] = $token;
+        $_COOKIE['auth_user'] = $user->id;
     }
 
     private static function decodeJwt($jwt, $secretKey)
@@ -119,6 +136,30 @@ class AuthController
 
     public function logout()
     {
-        $_COOKIE['auth_user'] = [];
+        $userId = $_COOKIE['auth_user'];
+
+        $userKeys = new UserKeys();
+        $key = $userKeys->findById($userId);
+
+        if (empty($key)) {
+            Response::send(500, [
+                'status' => 'Something is wrong',
+            ]);
+            exit;
+        }
+
+        if ($userKeys->destroy($key->id)) {
+            Response::send(200, [
+                'status' => 'Success',
+            ]);
+            exit;
+
+        }
+
+        Response::send(401, [
+            'status' => 'Unauthorized',
+        ]);
+        exit;
+
     }
 }
