@@ -2,7 +2,8 @@
 
 namespace App\models;
 
-use App\database\Database;
+use \App\database\Database;
+use \DomainException;
 
 class UserModel
 {
@@ -29,14 +30,21 @@ class UserModel
 
             return true;
 
-        } catch (\Throwable $th) {
+        } catch (DomainException $th) {
+            createLog($th);
             return false;
         }
     }
 
     public function findById($id)
     {
-        return $this->queryBuilder->select("id = '$id'")->fetchObject(self::class);
+        try {
+            return $this->queryBuilder->select("id = '$id'")->fetchObject(self::class);
+
+        } catch (DomainException $th) {
+            createLog($th);
+            return false;
+        }
     }
 
     public function update($id)
@@ -50,7 +58,8 @@ class UserModel
                 'password' => $hashInfo['algoName'] === 'unknown' ? password_hash($this->password, PASSWORD_ARGON2I) : $this->password,
             ]);
 
-        } catch (\Throwable $th) {
+        } catch (DomainException $th) {
+            createLog($th);
             return false;
         }
     }
@@ -59,7 +68,8 @@ class UserModel
     {
         try {
             return $this->queryBuilder->delete("id = '$this->id'");
-        } catch (\Throwable $th) {
+        } catch (DomainException $th) {
+            createLog($th);
             return false;
         }
     }

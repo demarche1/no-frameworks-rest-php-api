@@ -88,7 +88,7 @@ class Database
 
         $this->execute($query, $params);
 
-        return $this->connection->lastInsertId();
+        return $this->connection->lastInsertId() || 0;
     }
 
     /**

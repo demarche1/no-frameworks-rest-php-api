@@ -1,7 +1,6 @@
 <?php
 
 use \App\controllers\AuthController;
-use \Exception;
 
 function controller($matchedUri, $params)
 {

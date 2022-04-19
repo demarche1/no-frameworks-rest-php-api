@@ -1,9 +1,8 @@
 <?php
 
-function log($log) {
+function createLog($log)
+{
     $path = dirname(__DIR__, 2);
 
-    if(file_exists($path, '/logs.txt')) {
-        file_put_contents('/logs.txt', $log);
-    }
+    file_put_contents($path . '/logs.txt', $log, FILE_APPEND);
 }
